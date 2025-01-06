@@ -17,6 +17,7 @@
     "hcscript": "./bin/hcs.js"
   },
   "author": "suna66",
+  "homepage": "https://github.com/suna66/hc-script/",
   "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.2",
