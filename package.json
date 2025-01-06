@@ -1,0 +1,38 @@
+{
+  "name": "@suna66/http-client-script",
+  "version": "0.1.0",
+  "description": "script engine for easy to use HTTP request.",
+  "main": "index.js",
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c --environment BUILD:production",
+    "dev": "rollup -c --environment BUILD:develop",
+    "server": "json-server ./test/middleware.js -p 8000",
+    "test": "npm run build && node ./bin/hcs.js ./test/normal_case.hcs"
+  },
+  "bin": {
+    "hcscript": "./bin/hcs.js"
+  },
+  "author": "suna66",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.2",
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@types/node": "^22.10.2",
+    "json-server": "^0.17.4",
+    "rollup": "^4.29.1",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@types/minimist": "^1.2.5",
+    "minimist": "^1.2.8"
+  }
+}
