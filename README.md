@@ -6,23 +6,18 @@
 
 ## Quick Start
 
-#### Command
-
-```
-$ hcscript [script file] parameters...
-```
-
-or
-
-```
-$ npx hcscript [script file] parameters...
-```
-
 #### build
 
 ```
 $ npm i
 $ npm run build
+$ npm link (if nesessary)
+```
+
+#### Command
+
+```
+$ hcscript [script file] parameters...
 ```
 
 ## Usage
