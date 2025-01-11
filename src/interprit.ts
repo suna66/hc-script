@@ -8,10 +8,12 @@ import {
     HttpResponseObject,
     ControleObject,
     ScriptMode,
+    ExpressionObject,
 } from "./types";
 import Logger from "./log";
 import { HttpReq } from "./http";
 import { setTimeout } from "timers/promises";
+import { keyInput } from "./input";
 
 type Value = {
     type: string;
@@ -722,6 +724,11 @@ export default class Interprit {
         }
     }
 
+    _expression(expr: ExpressionObject): void {
+        const syntax = expr.syntax;
+        this._semantic(syntax);
+    }
+
     _output(syntax: OutputObject): void {
         var value = syntax.value;
         var str = this._convertVariableInStr(value);
@@ -842,6 +849,24 @@ export default class Interprit {
         }
     }
 
+    async _command(line: number): Promise<void> {
+        console.log("execute line %d", line);
+        while (1) {
+            const cmd = await keyInput(
+                'press command(enter: next step, "run": run script, "var": display vairables) :'
+            );
+            if (cmd == "run") {
+                this.mode.step = false;
+                break;
+            }
+            if (cmd == "var") {
+                console.log("%o", this.variables);
+                continue;
+            }
+            break;
+        }
+    }
+
     async _run(syntaxList: Syntax[], isRefreshStack: boolean): Promise<void> {
         for (let syntax of syntaxList) {
             if (isRefreshStack) {
@@ -864,13 +889,16 @@ export default class Interprit {
                     await this._sleepExecute(syntax as ControleObject);
                     break;
                 default:
-                    this._semantic(syntax as SyntaxObject);
+                    this._expression(syntax as ExpressionObject);
                     break;
             }
+            if (this.mode.step) {
+                await this._command(syntax.line);
+            }
             if (this.mode.verbose) {
-                console.log("--");
-                console.log("%o", this.variables);
                 console.log("==");
+                console.log("%o", this.variables);
+                console.log("--");
             }
         }
     }

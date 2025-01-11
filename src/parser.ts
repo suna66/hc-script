@@ -373,6 +373,7 @@ export class Parser {
     }
 
     _identStatement(syntaxList: Syntax[]): void {
+        const line = this.lex.getLine();
         let syntax = this._rootExpression();
         if (syntax == undefined) {
             Logger.error(
@@ -383,10 +384,17 @@ export class Parser {
             throw new Error("syntax error(illigale ident statement)");
         }
 
-        syntaxList.push(syntax);
+        const expression = {
+            type: "expression",
+            line: line,
+            syntax: syntax,
+        };
+
+        syntaxList.push(expression);
     }
 
     _httpStatement(syntaxList: Syntax[]): void {
+        const line = this.lex.getLine();
         const method = this.lex.getToken();
 
         const url = this.lex.nextURL();
@@ -410,6 +418,7 @@ export class Parser {
 
         const httpObject = {
             type: "http",
+            line: line,
             method: method,
             url: url,
             headers: [],
@@ -517,12 +526,14 @@ export class Parser {
     }
 
     _controlStatement(syntaqxList: Syntax[]): void {
+        const line = this.lex.getLine();
         let token = this.lex.getToken();
         if (token != "IF" && token != "WHILE") {
             return;
         }
         const obj: ControleObject = {
             type: "",
+            line: line,
             cond: undefined,
             syntaxList: [],
         };
@@ -554,12 +565,14 @@ export class Parser {
     }
 
     _sleepStatement(syntaqxList: Syntax[]): void {
+        const line = this.lex.getLine();
         let token = this.lex.getToken();
         if (token != "sleep") {
             return;
         }
         const obj: ControleObject = {
             type: "sleep",
+            line: line,
             cond: undefined,
             syntaxList: undefined,
         };
@@ -580,12 +593,14 @@ export class Parser {
     }
 
     _stdioutStatement(syntaxList: Syntax[]): void {
+        const line = this.lex.getLine();
         const token = this.lex.getToken();
         if (token == "string") {
             const value = this.lex.getText();
             //Logger.log(value);
             const msg: OutputObject = {
                 type: "output",
+                line: line,
                 value: value as string,
             };
             syntaxList.push(msg);

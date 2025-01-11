@@ -19,6 +19,7 @@ export type ExpressionObject = {
 
 export type OutputObject = {
     type: string;
+    line: number;
     value: string;
 };
 
@@ -34,6 +35,7 @@ export type HttpBody = {
 
 export type HttpObject = {
     type: string;
+    line: number;
     method: string;
     url: string;
     headers: HttpHeader[] | undefined;
@@ -44,16 +46,24 @@ export type HttpObject = {
 
 export type ControleObject = {
     type: string;
+    line: number;
     cond: SyntaxObject;
     syntaxList: Syntax[] | undefined;
 };
 
 export type NoneObject = {
     type: string;
+    line: number;
 };
 
 export type Syntax =
-    | (OutputObject | SyntaxObject | HttpObject | ControleObject | NoneObject)
+    | (
+          | OutputObject
+          | ExpressionObject
+          | HttpObject
+          | ControleObject
+          | NoneObject
+      )
     | undefined;
 
 export type HttpResponseObject = {
