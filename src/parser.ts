@@ -389,8 +389,8 @@ export class Parser {
     _httpStatement(syntaxList: Syntax[]): void {
         const method = this.lex.getToken();
 
-        var token = this.lex.next();
-        if (token != "string") {
+        const url = this.lex.nextURL();
+        if (url == undefined) {
             Logger.error(
                 "syntax error(no URL) %d - %o",
                 this.lex.getLine(),
@@ -398,8 +398,7 @@ export class Parser {
             );
             throw new Error("syntax error(no URL)");
         }
-        const url = this.lex.getText();
-        token = this.lex.next();
+        let token = this.lex.next();
         if (token != "\n") {
             Logger.error(
                 "syntax error(illegal http expression) %d - %o",
@@ -418,38 +417,40 @@ export class Parser {
             body: undefined,
             bind: undefined,
         };
-        token = this.lex.next();
+
+        let keyName = this.lex.nextKey();
+        token = this.lex.getToken();
         while (token != "\n" && token != undefined) {
-            if (token != "string") {
-                Logger.error(
-                    "syntax error(parameter key error) %d - %o",
-                    this.lex.getLine(),
-                    this.lex.getText()
-                );
-                throw new Error("syntax error(parameter key error)");
-            }
-            const key = this.lex.getText().toUpperCase();
-            token = this.lex.next();
-            if (token == ":" || token == "=") {
-                token = this.lex.next();
-            }
-            if (token != "string" && token != "json" && token != "id") {
+            if (token != "string" || keyName == undefined) {
                 Logger.error(
                     "syntax error(parameter value error) %d - %o",
                     this.lex.getLine(),
-                    this.lex.getText()
+                    token
                 );
                 throw new Error("syntax error(parameter value error)");
             }
-            const value = this.lex.getText();
+            const key = keyName.toUpperCase();
+
             if (key != "PARAMETER" && key != "BODY" && key != "BIND") {
+                const value = this.lex.nextValue();
+                if (value == undefined) {
+                    Logger.error(
+                        "syntax error(header value error) %d - %o",
+                        this.lex.getLine(),
+                        this.lex.getText()
+                    );
+                    throw new Error("syntax error(header value error)");
+                }
+
                 const header = {
                     key: key,
                     value: value,
                 };
                 httpObject.headers.push(header);
             } else if (key == "PARAMETER") {
-                if (token != "string") {
+                const value = this.lex.nextValue();
+                token = this.lex.getToken();
+                if (token != "string" || value == undefined) {
                     Logger.error(
                         "syntax error(request parameter is not string) %d - %o",
                         this.lex.getLine(),
@@ -461,12 +462,32 @@ export class Parser {
                 }
                 httpObject.parameters.push(value);
             } else if (key == "BODY") {
+                const value = this.lex.nextValue();
+                token = this.lex.getToken();
+                if (value == undefined) {
+                    Logger.error(
+                        "syntax error(body value error) %d - %o",
+                        this.lex.getLine(),
+                        this.lex.getText()
+                    );
+                    throw new Error("syntax error(body value error)");
+                }
+                if (token != "string" && token != "json") {
+                    Logger.error(
+                        "syntax error(body value error) %d - %o",
+                        this.lex.getLine(),
+                        this.lex.getText()
+                    );
+                    throw new Error("syntax error(body value error)");
+                }
                 const body = {
                     type: token,
                     value: value,
                 };
                 httpObject.body = body;
             } else if (key == "BIND") {
+                token = this.lex.next();
+                const value = this.lex.getText();
                 if (token != "id") {
                     Logger.error(
                         "syntax error(bind parameter is not variable) %d - %o",
@@ -488,7 +509,8 @@ export class Parser {
                 );
                 throw new Error("syntax error(no end of line)");
             }
-            token = this.lex.next();
+            keyName = this.lex.nextKey();
+            token = this.lex.getToken();
         }
         syntaxList.push(httpObject);
         this.lex.next();

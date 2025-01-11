@@ -159,6 +159,10 @@ export class Lex {
                         }
                         if (c == "\n") {
                             this.line++;
+                            continue;
+                        }
+                        if (c == "\r") {
+                            continue;
                         }
                         str += c;
                         if (closeNum == 0) {
@@ -248,5 +252,150 @@ export class Lex {
 
     getToken(): Token {
         return this.token;
+    }
+
+    nextURL(): string | undefined {
+        this._skip();
+        let c = this.sentence[0];
+        let index = 0;
+        let str = "";
+
+        while (c != "\n") {
+            if (c == undefined) {
+                return undefined;
+            }
+            str += c;
+            c = this.sentence[++index];
+        }
+
+        if (index > 0) {
+            this.sentence = this.sentence.slice(index);
+        }
+
+        this.token = "string";
+        this.text = str;
+
+        return str;
+    }
+
+    nextKey(): string | undefined {
+        this._skip();
+        let c = this.sentence[0];
+        let index = 0;
+        let str = "";
+
+        if (c == "\n") {
+            this.sentence = this.sentence.slice(1);
+            this.token = c;
+            this.line++;
+            return undefined;
+        }
+
+        while (1) {
+            c = this.sentence[index++];
+            if (c == ":") {
+                break;
+            }
+            if (c == "\n" || c == undefined) {
+                return undefined;
+            }
+            if (c == " ") {
+                continue;
+            }
+            str += c;
+        }
+        if (index > 0) {
+            this.sentence = this.sentence.slice(index);
+        }
+
+        this.token = "string";
+        this.text = str;
+        return str;
+    }
+
+    nextValue(): string | undefined {
+        this._skip();
+        let c = this.sentence[0];
+        let index = 0;
+        let str = "";
+
+        if (c == "\n") {
+            this.sentence = this.sentence.slice(1);
+            this.token = c;
+            return undefined;
+        }
+
+        if (c == "{") {
+            // object
+            let closeNum = 0;
+            while (1) {
+                c = this.sentence[index++];
+                if (c == undefined) {
+                    return undefined;
+                }
+                if (c == "{") {
+                    closeNum++;
+                }
+                if (c == "}") {
+                    closeNum--;
+                }
+                if (c == "\n") {
+                    this.line++;
+                    continue;
+                }
+                if (c == "\r") {
+                    continue;
+                }
+                str += c;
+                if (closeNum == 0) {
+                    break;
+                }
+            }
+            this.token = "json";
+        } else if (c == '"') {
+            // string
+            c = this.sentence[index++];
+            while (c != '"') {
+                if (c == undefined) {
+                    return undefined;
+                }
+                if (c == "\r" || c == "\n") {
+                    if (c == "\n") {
+                        this.line++;
+                    }
+                } else {
+                    str += c;
+                }
+                c = this.sentence[index++];
+            }
+            this.token = "string";
+        } else {
+            while (c != "\n" && c != undefined) {
+                str += c;
+                c = this.sentence[++index];
+            }
+            this.token = "string";
+        }
+        if (index > 0) {
+            this.sentence = this.sentence.slice(index);
+        }
+
+        this.text = str;
+        return str;
+    }
+
+    _skip(): void {
+        let c = undefined;
+        let index = 0;
+        while (1) {
+            c = this.sentence[index];
+            if (c != " " && c != "\t" && c != "\r") {
+                break;
+            }
+            index++;
+        }
+        if (index > 0) {
+            this.sentence = this.sentence.slice(index);
+        }
     }
 }

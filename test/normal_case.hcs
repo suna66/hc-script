@@ -87,33 +87,33 @@ AUTHOR1="auth.1"
 AUTHOR2="auth.2"
 
 # GET
-GET "${URL}/posts"
-"content-type": "${CONTENT_TYPE}"
-"bind": var4
+GET ${URL}/posts
+content-type: ${CONTENT_TYPE}
+bind: var4
 
 "status = ${var4.status}"
 "body[0].title = ${var4.body.0.title}"
 
 # POST
-POST "${URL}/posts"
-"content-type": "application/json"
-"body": {
+POST ${URL}/posts
+content-type: application/json
+body: {
     "id": 2,
     "title": "test2",
     "author": "${AUTHOR1}"
 }
 
-PUT "${URL}/posts/1"
-"content-type": "application/json"
-"body": {
+PUT ${URL}/posts/1
+content-type: application/json
+body: {
     "title": "update",
     "author": "${AUTHOR2}"
 }
 
 
-GET "${URL}/posts"
-"content-type": "application/json"
+GET ${URL}/posts
+content-type: application/json
 
 # DELETE
-DELETE "${URL}/posts/2"
-"content-type": "application/json"
+DELETE ${URL}/posts/2
+content-type: application/json
