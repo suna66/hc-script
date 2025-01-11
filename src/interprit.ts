@@ -7,6 +7,7 @@ import {
     Variable,
     HttpResponseObject,
     ControleObject,
+    ScriptMode,
 } from "./types";
 import Logger from "./log";
 import { HttpReq } from "./http";
@@ -26,18 +27,14 @@ type StackObj = {
 export default class Interprit {
     variables: { [key: string]: Value | undefined } = {};
     stack: Array<StackObj> = [];
-    cmdlineParam: Array<string> | undefined = undefined;
-    step: boolean = false;
+    cmdlineParam: Array<string>;
+    mode: ScriptMode;
 
-    constructor(_cmdlineParam: Array<string> | undefined) {
+    constructor(_cmdlineParam: Array<string> | undefined, _mode: ScriptMode) {
         this.variables = {};
         this.stack = [];
         this.cmdlineParam = _cmdlineParam;
-        this.step = false;
-    }
-
-    setStep(flag: boolean): void {
-        this.step = flag;
+        this.mode = _mode;
     }
 
     _getVariableValue(variable: Variable): Value | undefined {
@@ -736,8 +733,10 @@ export default class Interprit {
         url: string,
         httpResObj: HttpResponseObject
     ): void {
-        console.log("%s %s", method, url);
-        console.log(JSON.stringify(httpResObj, null, 2));
+        if (!this.mode.silent) {
+            console.log("%s %s", method, url);
+            console.log(JSON.stringify(httpResObj, null, 2));
+        }
     }
 
     async _webAPIRequest(syntax: HttpObject): Promise<void> {
@@ -867,6 +866,11 @@ export default class Interprit {
                 default:
                     this._semantic(syntax as SyntaxObject);
                     break;
+            }
+            if (this.mode.verbose) {
+                console.log("--");
+                console.log("%o", this.variables);
+                console.log("==");
             }
         }
     }

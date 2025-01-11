@@ -20,8 +20,8 @@ export class Parser {
         if (left == undefined) {
             Logger.error(
                 "syntax error(top level expression):%d - %o",
-                this.lex?.getLine(),
-                this.lex?.getText()
+                this.lex.getLine(),
+                this.lex.getText()
             );
             throw new Error("syntax error(top level expression)");
         }
@@ -32,8 +32,8 @@ export class Parser {
             if (right == undefined) {
                 Logger.error(
                     "syntax error(top level expression):%d - %o",
-                    this.lex?.getLine(),
-                    this.lex?.getText()
+                    this.lex.getLine(),
+                    this.lex.getText()
                 );
                 throw new Error("syntax error(top level expression)");
             }

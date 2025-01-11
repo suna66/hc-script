@@ -11,6 +11,12 @@ export type SyntaxObject = {
     right: SyntaxObject | undefined;
 };
 
+export type ExpressionObject = {
+    type: string;
+    line: number;
+    syntax: SyntaxObject | undefined;
+};
+
 export type OutputObject = {
     type: string;
     value: string;
@@ -56,4 +62,10 @@ export type HttpResponseObject = {
     headers: { [key: string]: string };
     bodyType: string;
     body: string | object | undefined;
+};
+
+export type ScriptMode = {
+    silent: boolean;
+    step: boolean;
+    verbose: boolean;
 };
