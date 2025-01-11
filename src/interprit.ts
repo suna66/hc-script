@@ -31,6 +31,7 @@ export default class Interprit {
     stack: Array<StackObj> = [];
     cmdlineParam: Array<string>;
     mode: ScriptMode;
+    stop: boolean = false;
 
     constructor(_cmdlineParam: Array<string> | undefined, _mode: ScriptMode) {
         this.variables = {};
@@ -853,10 +854,14 @@ export default class Interprit {
         console.log("execute line %d", line);
         while (1) {
             const cmd = await keyInput(
-                'press command(enter: next step, "run": run script, "var": display vairables) :'
+                'press command(enter: next step, "run": run script, "var": display vairables, "stop": stop script) :'
             );
             if (cmd == "run") {
                 this.mode.step = false;
+                break;
+            }
+            if (cmd == "stop") {
+                this.stop = true;
                 break;
             }
             if (cmd == "var") {
@@ -871,6 +876,9 @@ export default class Interprit {
         for (let syntax of syntaxList) {
             if (isRefreshStack) {
                 this.stack.length = 0;
+            }
+            if (this.stop) {
+                break;
             }
             switch (syntax.type) {
                 case "output":

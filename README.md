@@ -17,7 +17,13 @@ $ npm link (if nesessary)
 #### Command
 
 ```
-$ hcscript [script file] parameters...
+$ hcscript [script file] parameters... [OPTIONS]
+
+OPTIONS:
+    -h              display help.
+    -s              no display http response
+    -S              step mode
+    -v              verbose mode
 ```
 
 ## Usage

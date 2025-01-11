@@ -5,10 +5,10 @@ import { ScriptMode } from "./types";
 const p = require("../package.json");
 const help = `
 VERSION: ${p.version}
-USAGE: hcs [OPTIONS] file parameters...
+USAGE: hcs file parameters... [OPTIONS]
 
 OPTIONS:
-    -h              display this help.
+    -h              display help.
     -s              no display http response
     -S              step mode
     -v              verbose mode
@@ -40,7 +40,7 @@ function setupScriptMode(argv: minimist.ParsedArgs): ScriptMode {
 
     if (argv["h"] != undefined) {
         console.log(help);
-        return;
+        process.exit(0);
     }
 
     const cmdlines = argv._;
