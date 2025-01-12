@@ -1,5 +1,5 @@
 {
-  "name": "@suna66/http-client-script",
+  "name": "@suna66/hc-script",
   "version": "0.1.0",
   "description": "script engine for easy to use HTTP request.",
   "main": "index.js",
@@ -16,9 +16,13 @@
   "bin": {
     "hcscript": "./bin/hcs.js"
   },
-  "author": "suna66",
+  "author": "suna66 (https://github.com/suna66)",
   "homepage": "https://github.com/suna66/hc-script/",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/suna66/hc-script.git"
+  },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.2",
     "@rollup/plugin-node-resolve": "^16.0.0",

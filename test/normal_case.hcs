@@ -51,6 +51,9 @@ var4.obj.i = 100
 var2 = 100
 var3 = 3.14
 
+nest="var2"
+"nestring test var2 = ${${nest}}"
+
 # if/while test
 if var2 > 50
     "var2 is larger then 50."
@@ -92,7 +95,10 @@ content-type: ${CONTENT_TYPE}
 bind: var4
 
 "status = ${var4.status}"
+index = 0
 "body[0].title = ${var4.body.0.title}"
+"body[0].title = ${var4.body.${index}.title}"
+
 
 # POST
 POST ${URL}/posts
