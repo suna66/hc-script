@@ -854,17 +854,17 @@ export default class Interprit {
         console.log("execute line %d", line);
         while (1) {
             const cmd = await keyInput(
-                'press command(enter: next step, "run": run script, "var": display vairables, "stop": stop script) :'
+                'press command(enter: next step, "r": run script, "v": display variables, "s": stop script) :'
             );
-            if (cmd == "run") {
+            if (cmd.startsWith("r")) {
                 this.mode.step = false;
                 break;
             }
-            if (cmd == "stop") {
+            if (cmd.startsWith("s")) {
                 this.stop = true;
                 break;
             }
-            if (cmd == "var") {
+            if (cmd.startsWith("v")) {
                 console.log("%o", this.variables);
                 continue;
             }
