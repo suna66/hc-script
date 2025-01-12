@@ -70,7 +70,11 @@ export default class Interprit {
 
     _getValueFromVariablePath(path: string): Value | undefined {
         let pathArray = path.split(".");
-        let value = this.variables[pathArray[0]];
+        let startKey = pathArray[0];
+        if (this._hasVariableInStr(startKey)) {
+            startKey = this._convertVariableInStr(startKey);
+        }
+        let value = this.variables[startKey];
         if (value == undefined) {
             return undefined;
         }
@@ -82,9 +86,14 @@ export default class Interprit {
             value: value.value,
         };
 
+        let key = "";
         let memberValue = value.value;
         for (let i = 1; i < pathArray.length; i++) {
-            memberValue = memberValue[pathArray[i]];
+            key = pathArray[i];
+            if (this._hasVariableInStr(key)) {
+                key = this._convertVariableInStr(key);
+            }
+            memberValue = memberValue[key];
         }
 
         if (typeof memberValue == "object") {
@@ -123,10 +132,20 @@ export default class Interprit {
             }
             if (c == "$" && str[index] == "{") {
                 index++;
+                var numEnclose = 1;
                 var key = "";
                 while (1) {
                     c = str[index++];
-                    if (c == undefined || c == "}") {
+                    if (c == undefined) {
+                        break;
+                    }
+                    if (c == "{") {
+                        numEnclose++;
+                    }
+                    if (c == "}") {
+                        numEnclose--;
+                    }
+                    if (numEnclose == 0) {
                         break;
                     }
                     key += c;

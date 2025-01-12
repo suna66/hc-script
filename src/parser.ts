@@ -54,8 +54,8 @@ export class Parser {
         if (left == undefined) {
             Logger.error(
                 "syntax error(cond concat expression):%d - %o",
-                this.lex?.getLine(),
-                this.lex?.getText()
+                this.lex.getLine(),
+                this.lex.getText()
             );
             throw new Error("syntax error(cond concat expression)");
         }
@@ -66,8 +66,8 @@ export class Parser {
             if (right == undefined) {
                 Logger.error(
                     "syntax error(cond concat expression):%d - %o",
-                    this.lex?.getLine(),
-                    this.lex?.getText()
+                    this.lex.getLine(),
+                    this.lex.getText()
                 );
                 throw new Error("syntax error(cond concat expression)");
             }
@@ -88,8 +88,8 @@ export class Parser {
         if (left == undefined) {
             Logger.error(
                 "syntax error(compare expression):%d - %o",
-                this.lex?.getLine(),
-                this.lex?.getText()
+                this.lex.getLine(),
+                this.lex.getText()
             );
             throw new Error("syntax error(compare expression)");
         }
@@ -107,8 +107,8 @@ export class Parser {
             if (right == undefined) {
                 Logger.error(
                     "syntax error(compare expression):%d - %o",
-                    this.lex?.getLine(),
-                    this.lex?.getText()
+                    this.lex.getLine(),
+                    this.lex.getText()
                 );
                 throw new Error("syntax error(compare expression)");
             }
@@ -129,20 +129,20 @@ export class Parser {
         if (left == undefined) {
             Logger.error(
                 "syntax error(add/sub expression) %d - %o",
-                this.lex?.getLine(),
-                this.lex?.getText()
+                this.lex.getLine(),
+                this.lex.getText()
             );
             throw new Error("syntax error(add/sub expression)");
         }
-        let token = this.lex?.getToken();
+        let token = this.lex.getToken();
         if (token == "+" || token == "-") {
-            this.lex?.next();
+            this.lex.next();
             let right = this._addSubExpression();
             if (right == undefined) {
                 Logger.error(
                     "syntax error(add/sub expression) %d - %o",
-                    this.lex?.getLine(),
-                    this.lex?.getText()
+                    this.lex.getLine(),
+                    this.lex.getText()
                 );
                 throw new Error("syntax error(add/sub expression)");
             }
@@ -163,20 +163,20 @@ export class Parser {
         if (left == undefined) {
             Logger.error(
                 "syntax error(mul/div expression) %d - %o",
-                this.lex?.getLine(),
-                this.lex?.getText()
+                this.lex.getLine(),
+                this.lex.getText()
             );
             throw new Error("syntax error(mul/div expression)");
         }
-        let token = this.lex?.getToken();
+        let token = this.lex.getToken();
         if (token == "*" || token == "/") {
-            this.lex?.next();
+            this.lex.next();
             let right = this._mulDivExpression();
             if (right == undefined) {
                 Logger.error(
                     "syntax error(mul/div expression) %d - %o",
-                    this.lex?.getLine(),
-                    this.lex?.getText()
+                    this.lex.getLine(),
+                    this.lex.getText()
                 );
                 throw new Error("syntax error(mul/div expression)");
             }
@@ -193,7 +193,7 @@ export class Parser {
     }
 
     _factor(): SyntaxObject {
-        let token = this.lex?.getToken();
+        let token = this.lex.getToken();
         if (token == "-") {
             this.lex.next();
             let right = this._term();
@@ -263,9 +263,7 @@ export class Parser {
     }
 
     _term(): SyntaxObject {
-        let token = this.lex?.getToken();
-        if (token == "-") {
-        }
+        let token = this.lex.getToken();
         if (
             token == "string" ||
             token == "number" ||
@@ -276,8 +274,8 @@ export class Parser {
             if (literal == undefined) {
                 Logger.error(
                     "syntax error(unknown literal value) %d - %o",
-                    this.lex?.getLine(),
-                    this.lex?.getText()
+                    this.lex.getLine(),
+                    this.lex.getText()
                 );
                 throw new Error("syntax error(unknown literal value)");
             }
@@ -288,14 +286,14 @@ export class Parser {
         }
         Logger.error(
             "syntax error(not found variables or literals) %d - %o",
-            this.lex?.getLine(),
-            this.lex?.getText()
+            this.lex.getLine(),
+            this.lex.getText()
         );
         throw new Error("syntax error(not found variables or literals)");
     }
 
     _ident(): SyntaxObject {
-        let name = this.lex?.getText();
+        let name = this.lex.getText();
         var variable: Variable = { name: name!, member: undefined };
         var obj: SyntaxObject = {
             type: "var",
@@ -304,11 +302,11 @@ export class Parser {
             left: undefined,
             right: undefined,
         };
-        let token = this.lex?.next();
+        let token = this.lex.next();
         while (token == ".") {
-            token = this.lex?.next();
+            token = this.lex.next();
             if (token == "id") {
-                name = this.lex?.getText();
+                name = this.lex.getText();
                 var member: Variable = {
                     name: name!,
                     member: undefined,
@@ -318,20 +316,20 @@ export class Parser {
             } else {
                 Logger.error(
                     "syntax error(unknown token) %d - %o",
-                    this.lex?.getLine(),
-                    this.lex?.getText()
+                    this.lex.getLine(),
+                    this.lex.getText()
                 );
                 throw new Error("syntax error(unknown token)");
             }
-            token = this.lex?.next();
+            token = this.lex.next();
         }
         return obj;
     }
 
     _literal(): SyntaxObject | undefined {
-        let token = this.lex?.getToken();
-        let value = this.lex?.getText();
-        this.lex?.next();
+        let token = this.lex.getToken();
+        let value = this.lex.getText();
+        this.lex.next();
         if (token == "number") {
             const ite = {
                 type: "number",
@@ -605,7 +603,7 @@ export class Parser {
             };
             syntaxList.push(msg);
         }
-        this.lex?.next();
+        this.lex.next();
     }
 
     _parse(syntaxList: Syntax[]): void {
