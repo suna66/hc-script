@@ -1,17 +1,17 @@
 {
   "name": "@suna66/hc-script",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "script engine for easy to use HTTP request.",
   "main": "index.js",
   "files": [
-    "bin",
-    "dist"
+    "bin"
   ],
   "scripts": {
     "build": "rollup -c --environment BUILD:production",
     "dev": "rollup -c --environment BUILD:develop",
     "server": "json-server ./test/middleware.js -p 8000",
-    "test": "npm run build && node ./bin/hcs.js ./test/normal_case.hcs"
+    "test": "npm run build && node ./bin/hcs.js ./test/normal_case.hcs",
+    "release": "cp ./dist/main.js ./bin/main.js"
   },
   "bin": {
     "hcscript": "./bin/hcs.js"
