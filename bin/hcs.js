@@ -1,2 +1,7 @@
 #!/usr/bin/env node
-require("../dist/main.js");
+fs = require("fs");
+if (fs.existsSync("./dist/main.js")) {
+    require("../dist/main.js");
+} else {
+    require("./main.js");
+}

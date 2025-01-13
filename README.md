@@ -6,12 +6,10 @@
 
 ## Quick Start
 
-#### build
+#### install
 
 ```
-$ npm i
-$ npm run build
-$ npm link (if nesessary)
+npm install --global suna66/hc-script
 ```
 
 #### Command
@@ -24,6 +22,14 @@ OPTIONS:
     -s              no display http response
     -S              step mode
     -v              verbose mode
+```
+
+#### from source code
+
+```
+$ npm i
+$ npm run build
+$ npm link (if nesessary)
 ```
 
 ## Usage
