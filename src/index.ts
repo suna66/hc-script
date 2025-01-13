@@ -2,9 +2,9 @@ import minimist from "minimist";
 import { evalFile } from "./script";
 import { ScriptMode } from "./types";
 
-const p = require("../package.json");
+const VERSION = "v0.1";
 const help = `
-VERSION: ${p.version}
+VERSION: ${VERSION}
 USAGE: hcs file parameters... [OPTIONS]
 
 OPTIONS:
