@@ -10,8 +10,8 @@
     "build": "rollup -c --environment BUILD:production",
     "dev": "rollup -c --environment BUILD:develop",
     "server": "json-server ./test/middleware.js -p 8000",
-    "test": "npm run build && node ./bin/hcs.js ./test/normal_case.hcs",
-    "release": "cp ./dist/main.js ./bin/main.js"
+    "test": "npm run build && node ./dist/main.js ./test/normal_case.hcs",
+    "release": "npm run build && cp ./dist/main.js ./bin/main.js && node ./bin/hcs.js ./test/normal_case.hcs"
   },
   "bin": {
     "hcscript": "./bin/hcs.js"

@@ -9,7 +9,7 @@
 #### install
 
 ```
-npm install --global suna66/hc-script
+npm install suna66/hc-script
 ```
 
 #### Command
