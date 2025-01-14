@@ -4,8 +4,7 @@
   "description": "script engine for easy to use HTTP request.",
   "main": "bin/main.js",
   "files": [
-    "bin",
-    "dist"
+    "/bin"
   ],
   "scripts": {
     "build": "rollup -c --environment BUILD:production",
