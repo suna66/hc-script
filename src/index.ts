@@ -1,21 +1,46 @@
 import minimist from "minimist";
 import { evalFile } from "./script";
+import { ScriptMode } from "./types";
 
-const p = require("../package.json");
+const VERSION = "v0.1";
 const help = `
-VERSION: ${p.version}
-USAGE: hcs [OPTIONS] file parameters...
+VERSION: ${VERSION}
+USAGE: hcs file parameters... [OPTIONS]
 
 OPTIONS:
-    -h              display this help.
+    -h              display help.
+    -s              no display http response
+    -S              step mode
+    -v              verbose mode
 `;
+
+function setupScriptMode(argv: minimist.ParsedArgs): ScriptMode {
+    const mode: ScriptMode = {
+        silent: false,
+        step: false,
+        verbose: false,
+    };
+
+    if (argv["s"] != undefined) {
+        mode.silent = true;
+    }
+    if (argv["S"] != undefined) {
+        mode.step = true;
+    }
+    if (argv["v"] != undefined) {
+        mode.verbose = true;
+    }
+
+    return mode;
+}
 
 (function () {
     const argv = minimist(process.argv.slice(2));
+    const mode = setupScriptMode(argv);
 
     if (argv["h"] != undefined) {
         console.log(help);
-        return;
+        process.exit(0);
     }
 
     const cmdlines = argv._;
@@ -31,9 +56,11 @@ OPTIONS:
         cmdlineParam.push(cmdlines[i]);
     }
 
-    evalFile(scriptFile, cmdlineParam).then((ret) => {
-        process.exit(ret);
-    }).catch((e) => {
-        process.exit(1);
-    });
+    evalFile(scriptFile, cmdlineParam, mode)
+        .then((ret) => {
+            process.exit(ret);
+        })
+        .catch((e) => {
+            process.exit(1);
+        });
 })();

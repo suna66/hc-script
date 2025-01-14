@@ -6,18 +6,29 @@
 
 ## Quick Start
 
+#### install
+
+```
+npm install suna66/hc-script
+```
+
+#### command
+
+```
+$ hcscript [script file] parameters... [OPTIONS]
+
+OPTIONS:
+    -h              display help.
+    -s              no display http response
+    -S              step mode
+    -v              verbose mode
+```
+
 #### build
 
 ```
 $ npm i
 $ npm run build
-$ npm link (if nesessary)
-```
-
-#### Command
-
-```
-$ hcscript [script file] parameters...
 ```
 
 ## Usage
@@ -48,12 +59,12 @@ var_strInNum = "PI is ${var_number}."
 You can request HTTP server using following sentences.
 
 ```
-{method} "{URL}"
-"{request-header}": "{values}"
+{method} {URL}
+{request-header}: {values}
    :
-"parameter": "parameter1"
-"parameter": "parameter2"
-"body": "request body"
+parameter: parameter1
+parameter: parameter2
+body: "request body"
 <blank line>
 ```
 
@@ -61,21 +72,21 @@ Important thing is that blank line means end of HTTP request sentence.
 For example, if you want to send a GET request to HTTP server, you should write follow:
 
 ```
-GET "http://localhost:8000/v1/users"
-"content-type": "application/json"
-"authentication": "Bearer XXXXXX"
-"parameter": "id=0001"
+GET http://localhost:8000/v1/users
+content-type: application/json
+authentication: Bearer XXXXXX
+parameter: id=0001
 ```
 
 And `hc-script` can store HTTP response to variables you define.
 you should set variable name to "bind" section, so you can get the response you request to server.
 
 ```
-GET "http://localhost:8000/v1/users"
-"content-type": "application/json"
-"authentication": "Bearer XXXXXX"
-"parameter": "id=0001"
-"bind": var_response
+GET http://localhost:8000/v1/users
+content-type: application/json
+authentication": Bearer XXXXXX
+parameter: id=0001
+bind: var_response
 ```
 
 #### Output

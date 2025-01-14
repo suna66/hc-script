@@ -7,10 +7,13 @@ import {
     Variable,
     HttpResponseObject,
     ControleObject,
+    ScriptMode,
+    ExpressionObject,
 } from "./types";
 import Logger from "./log";
 import { HttpReq } from "./http";
 import { setTimeout } from "timers/promises";
+import { keyInput } from "./input";
 
 type Value = {
     type: string;
@@ -26,18 +29,15 @@ type StackObj = {
 export default class Interprit {
     variables: { [key: string]: Value | undefined } = {};
     stack: Array<StackObj> = [];
-    cmdlineParam: Array<string> | undefined = undefined;
-    step: boolean = false;
+    cmdlineParam: Array<string>;
+    mode: ScriptMode;
+    stop: boolean = false;
 
-    constructor(_cmdlineParam: Array<string> | undefined) {
+    constructor(_cmdlineParam: Array<string> | undefined, _mode: ScriptMode) {
         this.variables = {};
         this.stack = [];
         this.cmdlineParam = _cmdlineParam;
-        this.step = false;
-    }
-
-    setStep(flag: boolean): void {
-        this.step = flag;
+        this.mode = _mode;
     }
 
     _getVariableValue(variable: Variable): Value | undefined {
@@ -70,7 +70,11 @@ export default class Interprit {
 
     _getValueFromVariablePath(path: string): Value | undefined {
         let pathArray = path.split(".");
-        let value = this.variables[pathArray[0]];
+        let startKey = pathArray[0];
+        if (this._hasVariableInStr(startKey)) {
+            startKey = this._convertVariableInStr(startKey);
+        }
+        let value = this.variables[startKey];
         if (value == undefined) {
             return undefined;
         }
@@ -82,9 +86,14 @@ export default class Interprit {
             value: value.value,
         };
 
+        let key = "";
         let memberValue = value.value;
         for (let i = 1; i < pathArray.length; i++) {
-            memberValue = memberValue[pathArray[i]];
+            key = pathArray[i];
+            if (this._hasVariableInStr(key)) {
+                key = this._convertVariableInStr(key);
+            }
+            memberValue = memberValue[key];
         }
 
         if (typeof memberValue == "object") {
@@ -123,10 +132,20 @@ export default class Interprit {
             }
             if (c == "$" && str[index] == "{") {
                 index++;
+                var numEnclose = 1;
                 var key = "";
                 while (1) {
                     c = str[index++];
-                    if (c == undefined || c == "}") {
+                    if (c == undefined) {
+                        break;
+                    }
+                    if (c == "{") {
+                        numEnclose++;
+                    }
+                    if (c == "}") {
+                        numEnclose--;
+                    }
+                    if (numEnclose == 0) {
                         break;
                     }
                     key += c;
@@ -725,6 +744,11 @@ export default class Interprit {
         }
     }
 
+    _expression(expr: ExpressionObject): void {
+        const syntax = expr.syntax;
+        this._semantic(syntax);
+    }
+
     _output(syntax: OutputObject): void {
         var value = syntax.value;
         var str = this._convertVariableInStr(value);
@@ -736,8 +760,10 @@ export default class Interprit {
         url: string,
         httpResObj: HttpResponseObject
     ): void {
-        console.log("%s %s", method, url);
-        console.log(JSON.stringify(httpResObj, null, 2));
+        if (!this.mode.silent) {
+            console.log("%s %s", method, url);
+            console.log(JSON.stringify(httpResObj, null, 2));
+        }
     }
 
     async _webAPIRequest(syntax: HttpObject): Promise<void> {
@@ -843,10 +869,35 @@ export default class Interprit {
         }
     }
 
+    async _command(line: number): Promise<void> {
+        console.log("execute line %d", line);
+        while (1) {
+            const cmd = await keyInput(
+                'press command(enter: next step, "r": run script, "v": display variables, "s": stop script) :'
+            );
+            if (cmd.startsWith("r")) {
+                this.mode.step = false;
+                break;
+            }
+            if (cmd.startsWith("s")) {
+                this.stop = true;
+                break;
+            }
+            if (cmd.startsWith("v")) {
+                console.log("%o", this.variables);
+                continue;
+            }
+            break;
+        }
+    }
+
     async _run(syntaxList: Syntax[], isRefreshStack: boolean): Promise<void> {
         for (let syntax of syntaxList) {
             if (isRefreshStack) {
                 this.stack.length = 0;
+            }
+            if (this.stop) {
+                break;
             }
             switch (syntax.type) {
                 case "output":
@@ -865,8 +916,16 @@ export default class Interprit {
                     await this._sleepExecute(syntax as ControleObject);
                     break;
                 default:
-                    this._semantic(syntax as SyntaxObject);
+                    this._expression(syntax as ExpressionObject);
                     break;
+            }
+            if (this.mode.step) {
+                await this._command(syntax.line);
+            }
+            if (this.mode.verbose) {
+                console.log("==");
+                console.log("%o", this.variables);
+                console.log("--");
             }
         }
     }
