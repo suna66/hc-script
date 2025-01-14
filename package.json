@@ -1,5 +1,5 @@
 {
-  "name": "@suna66/hc-script",
+  "name": "hc-script",
   "version": "0.1.1",
   "description": "script engine for easy to use HTTP request.",
   "main": "index.js",
