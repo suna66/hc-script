@@ -1,10 +1,11 @@
 {
-  "name": "hc-script",
+  "name": "@suna66/hc-script",
   "version": "0.1.1",
   "description": "script engine for easy to use HTTP request.",
-  "main": "index.js",
+  "main": "bin/main.js",
   "files": [
-    "bin"
+    "bin",
+    "dist"
   ],
   "scripts": {
     "build": "rollup -c --environment BUILD:production",
