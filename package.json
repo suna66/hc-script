@@ -11,10 +11,10 @@
     "dev": "rollup -c --environment BUILD:develop",
     "server": "json-server ./test/middleware.js -p 8000",
     "test": "npm run build && node ./dist/main.js ./test/normal_case.hcs",
-    "release": "npm run build && cp ./dist/main.js ./bin/main.js && node ./bin/hcs.js ./test/normal_case.hcs"
+    "release": "npm run build && cp ./dist/main.js ./bin/main.js && node ./bin/cli.js ./test/normal_case.hcs"
   },
   "bin": {
-    "hcscript": "./bin/hcs.js"
+    "hcscript": "./bin/cli.js"
   },
   "author": "suna66 (https://github.com/suna66)",
   "homepage": "https://github.com/suna66/hc-script/",

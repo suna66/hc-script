@@ -12,7 +12,7 @@
 npm install suna66/hc-script
 ```
 
-#### Command
+#### command
 
 ```
 $ hcscript [script file] parameters... [OPTIONS]
@@ -24,12 +24,11 @@ OPTIONS:
     -v              verbose mode
 ```
 
-#### from source code
+#### build
 
 ```
 $ npm i
 $ npm run build
-$ npm link (if nesessary)
 ```
 
 ## Usage
